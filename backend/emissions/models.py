@@ -28,7 +28,6 @@ class ActivityLog(models.Model):
 
     @property
     def co2_total(self):
-        """Calculates total CO2 by multiplying usage quantity by the carbon factor."""
         return self.quantity * self.category.factor
 
     
