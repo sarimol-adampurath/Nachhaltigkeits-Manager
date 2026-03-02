@@ -16,11 +16,17 @@ function App() {
         <h1 className="text-2xl font-extrabold text-emerald-600 tracking-tight">
           Eco<span className="text-slate-800">Track</span>
         </h1>
-        <div className="text-sm font-medium text-slate-500">
-          Professional Sustainability Dashboard
-        </div>
-      </div>
-    </nav>
+       <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-full border border-slate-100 shadow-inner">
+      <span className="relative flex h-3 w-3">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+      </span>
+      <span className="text-xs font-bold text-slate-600  tracking-tighter">
+        System Live
+      </span>
+    </div>
+  </div>
+</nav>
 
     <main className="max-w-7xl mx-auto px-6 pb-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
