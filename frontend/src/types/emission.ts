@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface EmissionFactor {
   id: number;
   category: string;
@@ -14,3 +16,11 @@ export interface ActivityLog {
   note: string;
   co2_total: number;
 }
+
+export const EmissionSchema = z.object({
+  date: z.string().min(1, "Date is required"),
+  category: z.number().int().positive("Please select a valid category"),
+  quantity: z.number().positive("Quantity must be greater than zero"),
+  note: z.string().optional(),
+});
+export type EmissionFormValues = z.infer<typeof EmissionSchema>;

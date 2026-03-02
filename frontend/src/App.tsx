@@ -1,9 +1,10 @@
 import { useEmission } from "./hooks/useEmission";
 import { DashboardStats } from "./components/DashboardStats";
 import { EmissionCharts } from "./components/EmissionCharts";
+import { EmissionForm } from "./components/EmissionForm";
 
 function App() {
-  const { logs, loading, error } = useEmission();
+  const { logs, loading, error, fetchData } = useEmission();
   if (loading) return <div>Loading emission data...</div>;
   if (error) return <div style={{color:'red'}}>{error}</div>;
 
@@ -16,6 +17,7 @@ function App() {
       <main>
         <DashboardStats logs={logs} />
         <EmissionCharts logs={logs} />
+        <EmissionForm onSuccess={fetchData} />
         <br/>
         <br/>
         <section>

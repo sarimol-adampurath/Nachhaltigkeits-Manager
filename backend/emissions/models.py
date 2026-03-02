@@ -24,10 +24,14 @@ class ActivityLog(models.Model):
     date = models.DateField()
     category = models.ForeignKey(EmissionFactor, on_delete=models.PROTECT)
     quantity = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(0)])
-    note = models.CharField(blank=True)
+    note = models.CharField(max_length=500, blank=True, null=True)
 
-    @property
-    def co2_total(self):
-        return self.quantity * self.category.factor
+    #Store the calculation in the DB to avoid recalculating on every read. This is a denormalization for performance.
+    co2_total = models.DecimalField(max_digits=20, decimal_places=5, editable=False, default=0)
+
+    def save(self, *args, **kwargs):
+        # Calculate before saving to the database
+        self.co2_total = self.quantity * self.category.factor
+        super().save(*args, **kwargs)
 
     
