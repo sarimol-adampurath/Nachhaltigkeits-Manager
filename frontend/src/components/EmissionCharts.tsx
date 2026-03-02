@@ -1,44 +1,50 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip,Legend } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import type { ActivityLog } from "../types/emission";
-
-type ChartDataItem = {
-  name: string;
-  value: number;
-};
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+import { useEffect, useState } from "react";
+import apiClient from "../api/client";
+import { getCategoryColor } from "../utils/colorUtils";
 
 export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
-  const chartData = logs.reduce<ChartDataItem[]>((acc, log) => {
-        const existing = acc.find(item => item.name === log.category_name);
-        if(existing){
-            existing.value += Number(log.co2_total);
-        } else {
-            acc.push({ name: log.category_name, value: Number(log.co2_total) });
-        }
-        return acc;
-    }, []);
+  const [allCategories, setAllCategories] = useState<{id: number, category: string, unit: string}[]>([]);
+
+  useEffect(() => {
+    apiClient.get('factors/')
+      .then(res => setAllCategories(res.data))
+      .catch(err => console.error("Could not load categories", err));
+  }, []);
+
+  const chartData = allCategories.map(category => {
+    const logValue = logs
+      .filter(log => log.category_name === category.category)
+      .reduce((sum, log) => sum + Number(log.co2_total), 0);
+    
+    return {
+      name: category.category,
+      value: logValue
+    };
+  });
+
+  const categoryNames = allCategories.map(cat => cat.category);
 
    return (
-    <div style={{ width: '100%', height: 300, background: '#fff', padding: '20px', borderRadius: '12px' }}>
-      <h3>Emissions by Category</h3>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={chartData}
             cx="50%"
             cy="50%"
-            innerRadius={60}
-            outerRadius={80}
-            paddingAngle={5}
+            innerRadius={40}
+            outerRadius={60}
+            paddingAngle={3}
             dataKey="value"
           >
-            {chartData.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            {chartData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={getCategoryColor(entry.name, categoryNames)} />
             ))}
           </Pie>
           <Tooltip formatter={(value) => `${Number(value).toFixed(2)} kg`} />
-          <Legend />
+          <Legend wrapperStyle={{ fontSize: '12px' }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

@@ -13,3 +13,4 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
     """Handles GET, POST, PUT, DELETE for activity logs."""
     queryset = ActivityLog.objects.all().select_related('category')
     serializer_class = ActivityLogSerializer
+

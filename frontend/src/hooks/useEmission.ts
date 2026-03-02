@@ -19,9 +19,22 @@ export const useEmission = () => {
       setLoading(false);
     }
   };
+
+  const deleteLog = async (id: number) => {
+    const previousLogs = [...logs];
+    // Optimistic Update: Remove from UI immediately
+    setLogs(logs.filter((log) => log.id !== id));
+
+    try {
+      await emissionService.deleteLog(id);
+    } catch (err) {
+      setError("Failed to delete item");
+      setLogs(previousLogs); // Rollback on failure
+    }
+  };
   useEffect(() => {
     fetchData();
   }, []);
 
-  return { logs, loading, error, fetchData };
+  return { logs, loading, error, fetchData, deleteLog  };
 };
