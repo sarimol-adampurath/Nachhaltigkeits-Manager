@@ -4,9 +4,13 @@ import { EmissionCharts } from "./components/EmissionCharts";
 import { EmissionForm } from "./components/EmissionForm";
 import { DeleteModal } from "./components/DeleteModal";
 import { useState } from "react";
+import { SkeletonLoader } from "./components/Skeletons";
+import EmptyDashboard from "./components/EmptyDashboard";
+import { ErrorState } from "./components/ErrorState";
 
 function App() {
-  const { logs, loading, error, deleteLog } = useEmission();
+  const { logs, loading, error, deleteLog, refetch } = useEmission();
+  const hasNoData = !loading && logs.length === 0;
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   const confirmDeletion = async () => {
@@ -15,8 +19,6 @@ function App() {
       setDeleteTarget(null);
     }
   };
-  if (loading) return <div>Loading emission data...</div>;
-  if (error) return <div style={{color:'red'}}>{error}</div>;
 
  return (
   <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
@@ -39,7 +41,18 @@ function App() {
     </nav>
     {/* Main Content */}
     <main className="max-w-7xl mx-auto px-4 md:px-6 pb-8 md:pb-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
+      {error ? (
+        <div className="mt-10">
+            <ErrorState 
+              message="The EcoTrack API is currently unreachable." 
+              onRetry={() => refetch()} 
+            />
+          </div>
+      ): loading ? (
+        <SkeletonLoader />
+      ) : hasNoData ? (
+        <EmptyDashboard/>
+      ) : (<div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
         
         {/* TOP ROW: Stats Overview */}
         <div className="lg:col-span-12">
@@ -97,7 +110,7 @@ function App() {
             </ul>
           </div>
         </section>
-      </div>
+      </div>)}
     </main>
     <DeleteModal 
       isOpen={deleteTarget !== null} 

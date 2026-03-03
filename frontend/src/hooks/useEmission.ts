@@ -18,9 +18,10 @@ export const useEmission = () => {
   const queryClient = useQueryClient();
 
   // 1. Fetching Data (The "Read" part of CRUD)
-  const { data: logs = [], isLoading, isError } = useQuery({
+  const { data: logs = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['emissions'],
     queryFn: emissionService.getLogs,
+    retry:2,
   });
 
   // 2. Deleting Data (The "Delete" part of CRUD)
@@ -45,6 +46,7 @@ export const useEmission = () => {
     logs, 
     loading: isLoading, 
     error: isError ? "Failed to sync with server" : null,
+    refetch,
     deleteLog: deleteMutation.mutate, // This replaces your old deleteLog
     addLog: addMutation.mutate, // This replaces your old addLog
     isAdding: addMutation.isPending, // Optional: can be used to disable form while adding
