@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 # Create your models here.
 class EmissionFactor(models.Model):
@@ -8,6 +9,7 @@ class EmissionFactor(models.Model):
     Stores the CO2-equivalent value for different types of energy or activities.
     Example: 1 kWh of Electricity = 0.328 kg CO2.
     """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='logs', null=True, blank=True)
     category = models.CharField(max_length=100, unique=True)
     unit = models.CharField(max_length=20)
     factor = models.DecimalField(max_digits=10, decimal_places=5)
