@@ -21,7 +21,7 @@ class ActivityLog(models.Model):
     Records a specific business activity on a certain date. 
     It links to an EmissionFactor to calculate the total environmental impact.
     """
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     category = models.ForeignKey(EmissionFactor, on_delete=models.PROTECT)
     quantity = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(0)])
     note = models.CharField(max_length=500, blank=True, null=True)
@@ -33,5 +33,6 @@ class ActivityLog(models.Model):
         # Calculate before saving to the database
         self.co2_total = self.quantity * self.category.factor
         super().save(*args, **kwargs)
+
 
     

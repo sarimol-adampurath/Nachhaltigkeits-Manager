@@ -1,19 +1,17 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import type { ActivityLog } from "../types/emission";
-import { useEffect, useState } from "react";
-import apiClient from "../api/client";
+import type { ActivityLog, EmissionFactor } from "../types/emission";
 import { getCategoryColor } from "../utils/colorUtils";
+import { useQuery } from "@tanstack/react-query";
+import { emissionService } from "../api/emissionServices";
 
 export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
-  const [allCategories, setAllCategories] = useState<{id: number, category: string, unit: string}[]>([]);
+  const { data: allCategories = [] } = useQuery<EmissionFactor[]>({
+    queryKey: ['factors'],
+    queryFn: emissionService.getFactors,
+    staleTime: 1000 * 60 * 5, // Cache 5 minutes
+  });
 
-  useEffect(() => {
-    apiClient.get('factors/')
-      .then(res => setAllCategories(res.data))
-      .catch(err => console.error("Could not load categories", err));
-  }, []);
-
-  const chartData = allCategories.map(category => {
+  const chartData = allCategories.map((category: EmissionFactor) => {
     const logValue = logs
       .filter(log => log.category_name === category.category)
       .reduce((sum, log) => sum + Number(log.co2_total), 0);
@@ -24,7 +22,7 @@ export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
     };
   });
 
-  const categoryNames = allCategories.map(cat => cat.category);
+  const categoryNames = allCategories.map((cat: EmissionFactor) => cat.category);
 
    return (
     <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -39,7 +37,7 @@ export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
             paddingAngle={3}
             dataKey="value"
           >
-            {chartData.map((entry, index) => (
+            {chartData.map((entry: { name: string; value: number }, index: number) => (
               <Cell key={`cell-${index}`} fill={getCategoryColor(entry.name, categoryNames)} />
             ))}
           </Pie>

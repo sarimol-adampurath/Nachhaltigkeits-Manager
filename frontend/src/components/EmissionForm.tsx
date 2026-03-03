@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EmissionSchema, type EmissionFormValues } from '../types/emission';
+import { EmissionSchema, type EmissionFactor, type EmissionFormValues } from '../types/emission';
 import { useQuery } from '@tanstack/react-query';
 import { useEmission } from '../hooks/useEmission';
 import { emissionService } from '../api/emissionServices';
@@ -46,7 +46,7 @@ export const EmissionForm = () => {
           }}
         >
           <option value="">Select Category</option>
-          {categories.map((cat: any) => (
+          {categories.map((cat: EmissionFactor) => (
             <option key={cat.id} value={cat.id}>{cat.category}</option>
           ))}
         </select>
