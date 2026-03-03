@@ -6,14 +6,13 @@ import { DeleteModal } from "./components/DeleteModal";
 import { useState } from "react";
 
 function App() {
-  const { logs, loading, error, fetchData, deleteLog } = useEmission();
+  const { logs, loading, error, deleteLog } = useEmission();
   const [deleteTarget, setDeleteTarget] = useState<number | null>(null);
 
   const confirmDeletion = async () => {
     if (deleteTarget !== null) {
       await deleteLog(deleteTarget);
       setDeleteTarget(null);
-      fetchData();
     }
   };
   if (loading) return <div>Loading emission data...</div>;
@@ -33,7 +32,7 @@ function App() {
         <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500"></span>
       </span>
       <span className="text-xs font-bold text-slate-600 tracking-tighter">
-        Live
+       System Live
       </span>
     </div>
   </div>
@@ -54,7 +53,7 @@ function App() {
               <span className="bg-emerald-100 text-emerald-700 p-1 rounded text-sm">＋</span>
               Log Emission
             </h2>
-            <EmissionForm onSuccess={fetchData} />
+            <EmissionForm />
           </div>
         </aside>
 

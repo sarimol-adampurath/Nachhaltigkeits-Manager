@@ -1,31 +1,29 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EmissionSchema, type EmissionFormValues } from '../types/emission';
-import apiClient from '../api/client';
-import { useEffect, useState,} from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEmission } from '../hooks/useEmission';
+import { emissionService } from '../api/emissionServices';
 
-export const EmissionForm = ({ onSuccess }: { onSuccess: () => void }) => {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<EmissionFormValues>({
+export const EmissionForm = () => {
+  const{addLog, isAdding} = useEmission();
+   // Using the new addLog mutation from our hook
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<EmissionFormValues>({
     resolver: zodResolver(EmissionSchema),
+  });  
+  const { data: categories = [] } = useQuery({
+    queryKey: ['factors'],
+    queryFn: () => emissionService.getFactors()
   });
-
-  const [categories, setCategories] = useState<{id: number, category: string, unit: string}[]>([]);
   
-  useEffect(() => {
-  // Fetching the "Carbon Library" we seeded earlier
-  apiClient.get('factors/')
-    .then(res => setCategories(res.data))
-    .catch(err => console.error("Could not load categories", err));
-}, []);
-
-  const onSubmit = async (data: EmissionFormValues) => {
-    try {
-      await apiClient.post('logs/', data);
-      reset(); // Clear form
-      onSuccess(); // Refresh the dashboard data
-    } catch (error) {
-      console.error("Submission failed", error);
-    }
+  const onSubmit = (data: EmissionFormValues) => {
+    // 3. Use the mutation from our hook. 
+    // It automatically calls invalidateQueries on success.
+    addLog(data, {
+      onSuccess: () => {
+        reset(); // Clear form only if backend accepts it
+      },
+    });
   };
 
   return (
@@ -48,7 +46,7 @@ export const EmissionForm = ({ onSuccess }: { onSuccess: () => void }) => {
           }}
         >
           <option value="">Select Category</option>
-          {categories.map((cat) => (
+          {categories.map((cat: any) => (
             <option key={cat.id} value={cat.id}>{cat.category}</option>
           ))}
         </select>
@@ -70,11 +68,11 @@ export const EmissionForm = ({ onSuccess }: { onSuccess: () => void }) => {
 
       <button 
         type="submit" 
-        disabled={isSubmitting}
+        disabled={isAdding}
         className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold 
              rounded-xl shadow-md shadow-emerald-100 transition-all transform active:scale-[0.98] mt-4"
       >
-        {isSubmitting ? 'Saving...' : 'Add Log'}
+        {isAdding ? 'Saving...' : 'Add Log'}
       </button>
     </form>
   );

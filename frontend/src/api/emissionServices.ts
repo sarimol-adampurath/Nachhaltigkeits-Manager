@@ -9,11 +9,20 @@ export const emissionService = {
   },
 
   // delete a log by id
-  deleteLog: async (id: number) => {
-  const response = await fetch(`http://127.0.0.1:8000/api/logs/${id}/`, {
-    method: 'DELETE',
-  });
-  if (!response.ok) throw new Error("Delete failed");
-  return true;
-},
+  deleteLog: async (id: number): Promise<void> => {
+    await apiClient.delete(`logs/${id}/`); 
+    // Axios throws automatically if status is not 2xx, no need for manual 'if (!ok)'
+  },
+
+  // create a new log
+  createLog: async (data: { date: string; category: number; quantity: number; note?: string }): Promise<ActivityLog> => {
+    const response = await apiClient.post<ActivityLog>('logs/', data);
+    return response.data;
+  },
+
+  // get all emission factors
+  getFactors: async () => {
+    const response = await apiClient.get('factors/');
+    return response.data;
+  },
 };
