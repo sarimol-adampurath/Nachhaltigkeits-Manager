@@ -12,7 +12,47 @@ import EmptyDashboard from "../components/EmptyDashboard";
 import type { ActivityLog } from "../types/emission";
 
 export const Dashboard = () => {
-  const { logs, loading, error, deleteLog, refetch } = useEmission();
+  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [customStartDate, setCustomStartDate] = useState<string>('');
+  const [customEndDate, setCustomEndDate] = useState<string>('');
+  
+  // Calculate date range based on filter
+  const getDateRange = () => {
+    const today = new Date();
+    let startDate = '';
+    let endDate = today.toISOString().split('T')[0];
+    
+    switch(dateFilter) {
+      case '7days':
+        const last7Days = new Date(today);
+        last7Days.setDate(today.getDate() - 7);
+        startDate = last7Days.toISOString().split('T')[0];
+        break;
+      case '30days':
+        const last30Days = new Date(today);
+        last30Days.setDate(today.getDate() - 30);
+        startDate = last30Days.toISOString().split('T')[0];
+        break;
+      case 'year':
+        const lastYear = new Date(today);
+        lastYear.setFullYear(today.getFullYear() - 1);
+        startDate = lastYear.toISOString().split('T')[0];
+        break;
+      case 'custom':
+        startDate = customStartDate;
+        endDate = customEndDate;
+        break;
+      case 'all':
+      default:
+        startDate = '';
+        endDate = '';
+    }
+    
+    return { startDate, endDate };
+  };
+  
+  const { startDate, endDate } = getDateRange();
+  const { logs, loading, error, deleteLog, refetch } = useEmission(startDate, endDate);
   const { logout } = useAuth();
   const navigate = useNavigate();
   const hasNoData = !loading && logs.length === 0;
@@ -71,7 +111,98 @@ export const Dashboard = () => {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8">
         
-        {/* TOP ROW: Stats Overview - Always show */}
+        {/* TOP ROW: Date Filter */}
+        <div className="lg:col-span-12">
+          <div className="bg-white rounded-2xl p-3 md:p-6 shadow-sm border border-slate-200 mb-4 md:mb-6">
+            <h3 className="text-xs md:text-sm font-semibold text-slate-700 mb-3">Filter by Date Range</h3>
+            <div className="flex flex-col gap-3">
+              {/* Filter Buttons - Grid on mobile, flex on larger screens */}
+              <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
+                <button
+                  onClick={() => setDateFilter('all')}
+                  className={`px-3 py-2 md:px-4 rounded-lg font-medium text-xs md:text-sm transition-all ${
+                    dateFilter === 'all'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  All Time
+                </button>
+                <button
+                  onClick={() => setDateFilter('7days')}
+                  className={`px-3 py-2 md:px-4 rounded-lg font-medium text-xs md:text-sm transition-all ${
+                    dateFilter === '7days'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  7 Days
+                </button>
+                <button
+                  onClick={() => setDateFilter('30days')}
+                  className={`px-3 py-2 md:px-4 rounded-lg font-medium text-xs md:text-sm transition-all ${
+                    dateFilter === '30days'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  30 Days
+                </button>
+                <button
+                  onClick={() => setDateFilter('year')}
+                  className={`px-3 py-2 md:px-4 rounded-lg font-medium text-xs md:text-sm transition-all ${
+                    dateFilter === 'year'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  1 Year
+                </button>
+                <button
+                  onClick={() => setDateFilter('custom')}
+                  className={`col-span-2 sm:col-span-1 px-3 py-2 md:px-4 rounded-lg font-medium text-xs md:text-sm transition-all ${
+                    dateFilter === 'custom'
+                      ? 'bg-emerald-600 text-white shadow-md'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  }`}
+                >
+                  Custom Range
+                </button>
+              </div>
+              
+              {/* Custom Date Inputs - Stack on mobile */}
+              <div 
+                className={`flex flex-col sm:flex-row gap-3 transition-all duration-300 overflow-hidden ${
+                  dateFilter === 'custom' 
+                    ? 'max-h-40 sm:max-h-24 opacity-100' 
+                    : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="flex-1">
+                  <label className="block text-xs text-slate-600 mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    value={customStartDate}
+                    onChange={(e) => setCustomStartDate(e.target.value)}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs md:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs text-slate-600 mb-1">End Date</label>
+                  <input
+                    type="date"
+                    value={customEndDate}
+                    onChange={(e) => setCustomEndDate(e.target.value)}
+                    max={new Date().toISOString().split('T')[0]}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs md:text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Stats Overview - Always show */}
         <div className="lg:col-span-12">
           <DashboardStats logs={logs} />
         </div>

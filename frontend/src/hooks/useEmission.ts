@@ -14,13 +14,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { emissionService } from '../api/emissionServices';
 
-export const useEmission = () => {
+export const useEmission = (startDate?: string, endDate?: string) => {
   const queryClient = useQueryClient();
 
   // 1. Fetching Data (The "Read" part of CRUD)
   const { data: logs = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ['emissions'],
-    queryFn: emissionService.getLogs,
+    queryKey: ['emissions', startDate, endDate],
+    queryFn: () => emissionService.getLogs(startDate, endDate),
     retry:2,
   });
 

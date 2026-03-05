@@ -35,13 +35,28 @@ class EmissionFactorViewSet(viewsets.ModelViewSet):
 class ActivityLogViewSet(viewsets.ModelViewSet):
     """
     Activity logs - each user only sees and edits their own logs.
+    Can be filtered by date range using query parameters:
+    - start_date: filter logs from this date onwards (YYYY-MM-DD)
+    - end_date: filter logs up to this date (YYYY-MM-DD)
     """
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ActivityLogSerializer
 
     def get_queryset(self):
-        """Filter activity logs to only show the current user's logs"""
-        return ActivityLog.objects.filter(user=self.request.user).select_related('category')
+        """Filter activity logs to only show the current user's logs, with optional date filtering"""
+        queryset = ActivityLog.objects.filter(user=self.request.user).select_related('category')
+        
+        # Get date range parameters from query string
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        
+        # Apply date filters if provided
+        if start_date:
+            queryset = queryset.filter(date__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(date__lte=end_date)
+        
+        return queryset.order_by('-date')
 
     def perform_create(self, serializer):
         """Automatically set the user when creating a new log"""

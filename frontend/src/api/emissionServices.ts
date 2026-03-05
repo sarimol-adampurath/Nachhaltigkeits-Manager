@@ -2,9 +2,14 @@ import apiClient from "./client";
 import type {ActivityLog} from "../types/emission";  
 
 export const emissionService = {
-    // get all the logs from backend
-  getLogs:async (): Promise<ActivityLog[]> => {
-    const response = await apiClient.get<ActivityLog[]>('logs/');
+    // get all the logs from backend (optionally filtered by date range)
+  getLogs:async (startDate?: string, endDate?: string): Promise<ActivityLog[]> => {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const url = params.toString() ? `logs/?${params.toString()}` : 'logs/';
+    const response = await apiClient.get<ActivityLog[]>(url);
     return response.data;
   },
 
