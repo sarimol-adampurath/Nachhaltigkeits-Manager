@@ -8,8 +8,8 @@ class EmissionFactor(models.Model):
     Katalog der Emissionsfaktoren (The "Carbon Library").
     Stores the CO2-equivalent value for different types of energy or activities.
     Example: 1 kWh of Electricity = 0.328 kg CO2.
+    Shared by all users globally.
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='logs', null=True, blank=True)
     category = models.CharField(max_length=100, unique=True)
     unit = models.CharField(max_length=20)
     factor = models.DecimalField(max_digits=10, decimal_places=5)
@@ -23,6 +23,7 @@ class ActivityLog(models.Model):
     Records a specific business activity on a certain date. 
     It links to an EmissionFactor to calculate the total environmental impact.
     """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activity_logs', null=True, blank=True)
     date = models.DateField(db_index=True)
     category = models.ForeignKey(EmissionFactor, on_delete=models.PROTECT)
     quantity = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(0)])
