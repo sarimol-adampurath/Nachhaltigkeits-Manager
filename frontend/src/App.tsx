@@ -2,14 +2,16 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './components/LoginPage';
+import { SignupPage } from './components/SignupPage';
 import { Dashboard } from './pages/Dashboard';
 
 // Separate component for routes to ensure they're inside AuthProvider
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public Route */}
+      {/* Public Routes */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
 
       {/* Protected Route */}
       <Route 

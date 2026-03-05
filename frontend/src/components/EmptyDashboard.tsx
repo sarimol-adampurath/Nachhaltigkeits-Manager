@@ -11,7 +11,7 @@ const EmptyDashboard = () => (
       <svg className="w-6 h-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-5-5m0 0l5-5m-5 5h18" />
       </svg>
-      <span className="text-xs font-bold uppercase tracking-widest">Start here</span>
+      <span className="text-xs font-bold uppercase tracking-widest">Start adding data</span>
     </div>
   </div>
 );

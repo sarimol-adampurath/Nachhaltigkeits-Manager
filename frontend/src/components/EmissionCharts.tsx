@@ -3,6 +3,7 @@ import type { ActivityLog, EmissionFactor } from "../types/emission";
 import { getCategoryColor } from "../utils/colorUtils";
 import { useQuery } from "@tanstack/react-query";
 import { emissionService } from "../api/emissionServices";
+import { DummyChart } from "./DummyChart";
 
 export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
   const { data: allCategories = [] } = useQuery<EmissionFactor[]>({
@@ -10,6 +11,11 @@ export const EmissionCharts = ({ logs }: { logs: ActivityLog[] }) => {
     queryFn: emissionService.getFactors,
     staleTime: 1000 * 60 * 5, // Cache 5 minutes
   });
+
+  // If no logs, show dummy chart
+  if (logs.length === 0) {
+    return <DummyChart />;
+  }
 
   const chartData = allCategories.map((category: EmissionFactor) => {
     const logValue = logs

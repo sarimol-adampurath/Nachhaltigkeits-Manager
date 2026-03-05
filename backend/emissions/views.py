@@ -1,6 +1,25 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 from .models import EmissionFactor, ActivityLog
-from .serializers import EmissionFactorSerializer, ActivityLogSerializer
+from .serializers import EmissionFactorSerializer, ActivityLogSerializer, UserRegistrationSerializer
+
+
+@api_view(['POST'])
+@permission_classes([permissions.AllowAny])
+def register_user(request):
+    """
+    Register a new user account.
+    Endpoint: POST /api/register/
+    """
+    serializer = UserRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {'message': 'User registered successfully. You can now log in.'},
+            status=status.HTTP_201_CREATED
+        )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class EmissionFactorViewSet(viewsets.ModelViewSet):
