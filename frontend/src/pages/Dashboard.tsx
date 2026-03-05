@@ -89,12 +89,20 @@ export const Dashboard = () => {
             </span>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 font-medium rounded-lg transition-all text-sm md:text-base border border-slate-200 hover:border-red-200"
-        >
-          Logout
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate('/profile')}
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-all text-sm md:text-base border border-slate-200"
+          >
+            Profile
+          </button>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 font-medium rounded-lg transition-all text-sm md:text-base border border-slate-200 hover:border-red-200"
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </nav>
     {/* Main Content */}

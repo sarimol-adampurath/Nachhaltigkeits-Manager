@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .models import EmissionFactor, ActivityLog
-from .serializers import EmissionFactorSerializer, ActivityLogSerializer, UserRegistrationSerializer
+from .serializers import EmissionFactorSerializer, ActivityLogSerializer, UserRegistrationSerializer, UserProfileSerializer
 
 
 @api_view(['POST'])
@@ -19,6 +19,25 @@ def register_user(request):
             {'message': 'User registered successfully. You can now log in.'},
             status=status.HTTP_201_CREATED
         )
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'PUT', 'PATCH'])
+@permission_classes([permissions.IsAuthenticated])
+def user_profile(request):
+    """
+    Get or update the currently authenticated user's profile.
+    Endpoint: GET/PUT/PATCH /api/profile/
+    """
+    if request.method == 'GET':
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data)
+
+    partial = request.method == 'PATCH'
+    serializer = UserProfileSerializer(request.user, data=request.data, partial=partial)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

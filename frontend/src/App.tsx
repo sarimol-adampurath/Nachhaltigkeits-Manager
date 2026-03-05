@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage } from './components/LoginPage';
 import { SignupPage } from './components/SignupPage';
 import { Dashboard } from './pages/Dashboard';
+import { ProfilePage } from './pages/ProfilePage';
 
 // Separate component for routes to ensure they're inside AuthProvider
 function AppRoutes() {
@@ -21,6 +22,15 @@ function AppRoutes() {
             <Dashboard />
           </ProtectedRoute>
         } 
+      />
+
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
+        }
       />
 
       {/* Fallback */}
