@@ -16,6 +16,9 @@ export const EmissionForm = () => {
     queryFn: () => emissionService.getFactors()
   });
   
+  // Get today's date in YYYY-MM-DD format for max date constraint
+  const today = new Date().toISOString().split('T')[0];
+  
   const onSubmit = (data: EmissionFormValues) => {
     // 3. Use the mutation from our hook. 
     // It automatically calls invalidateQueries on success.
@@ -56,7 +59,12 @@ export const EmissionForm = () => {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-700">Date</label>
-          <input type="date" {...register('date')} className="mt-1 p-1 block w-full rounded-md border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-2 focus:outline-none shadow-sm" />
+          <input 
+            type="date" 
+            {...register('date')} 
+            max={today}
+            className="mt-1 p-1 block w-full rounded-md border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-2 focus:outline-none shadow-sm" 
+          />
           {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>}
         </div>
         <div>
