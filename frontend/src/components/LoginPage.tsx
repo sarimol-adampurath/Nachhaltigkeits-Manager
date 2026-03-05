@@ -1,15 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import apiClient from '../api/client';
 import { useState } from 'react';
 
 export const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [serverError, setServerError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
+  const successMessage = (location.state as { message?: string } | null)?.message;
 
   const onSubmit = async (data: any) => {
     try {
@@ -48,6 +50,12 @@ export const LoginPage = () => {
           </div>
         )}
 
+        {successMessage && (
+          <div className="mb-4 p-3 bg-emerald-50 text-emerald-700 text-sm rounded-xl border border-emerald-100 text-center">
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-slate-700">Username</label>
@@ -83,6 +91,11 @@ export const LoginPage = () => {
                   </svg>
                 )}
               </button>
+            </div>
+            <div className="mt-2 text-right">
+              <Link to="/forgot-password" className="text-sm text-emerald-600 font-medium hover:text-emerald-700">
+                Forgot password?
+              </Link>
             </div>
           </div>
           <button 
