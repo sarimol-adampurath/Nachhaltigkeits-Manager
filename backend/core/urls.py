@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.urls import include, path
+from django.conf import settings
+from django.urls import include, path, re_path
+from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,    
     TokenRefreshView,
@@ -12,3 +14,9 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+# Single-host deployment: route non-API paths to React app.
+if settings.FRONTEND_DIST_DIR.exists():
+    urlpatterns += [
+        re_path(r'^(?!api/|admin/|static/).*$', TemplateView.as_view(template_name='index.html')),
+    ]
