@@ -34,8 +34,9 @@ export const EmissionForm = () => {
       <h3 className="text-lg font-bold text-slate-800 mb-4">Log New Activity</h3>
       
       <div>
-        <label className="block text-sm font-medium text-slate-700">Category</label>
+        <label htmlFor="emission-category" className="block text-sm font-medium text-slate-700">Category</label>
         <select
+          id="emission-category"
           {...register('category', {
             setValueAs: (value) => (value === '' ? undefined : Number(value)),
           })}
@@ -58,8 +59,9 @@ export const EmissionForm = () => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700">Date</label>
+          <label htmlFor="emission-date" className="block text-sm font-medium text-slate-700">Date</label>
           <input 
+            id="emission-date"
             type="date" 
             {...register('date')} 
             max={today}
@@ -68,8 +70,8 @@ export const EmissionForm = () => {
           {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700">Quantity</label>
-          <input type="number" step="0.01" {...register('quantity', { valueAsNumber: true })} className="mt-1 p-1 block w-full rounded-md border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-2 focus:outline-none shadow-sm" />
+          <label htmlFor="emission-quantity" className="block text-sm font-medium text-slate-700">Quantity</label>
+          <input id="emission-quantity" type="number" step="0.01" {...register('quantity', { valueAsNumber: true })} className="mt-1 p-1 block w-full rounded-md border-slate-300 focus:border-emerald-500 focus:ring-emerald-500 focus:ring-2 focus:outline-none shadow-sm" />
           {errors.quantity && <p className="text-red-500 text-xs mt-1">{errors.quantity.message}</p>}
         </div>
       </div>

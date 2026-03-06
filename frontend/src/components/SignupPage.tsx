@@ -60,8 +60,9 @@ export const SignupPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700">Username</label>
+            <label htmlFor="signup-username" className="block text-sm font-medium text-slate-700">Username</label>
             <input 
+              id="signup-username"
               {...register('username', { 
                 required: 'Username is required',
                 minLength: { value: 3, message: 'Username must be at least 3 characters' }
@@ -73,8 +74,9 @@ export const SignupPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700">Email</label>
+            <label htmlFor="signup-email" className="block text-sm font-medium text-slate-700">Email</label>
             <input 
+              id="signup-email"
               type="email"
               {...register('email', { 
                 required: 'Email is required',
@@ -87,9 +89,10 @@ export const SignupPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700">Password</label>
+            <label htmlFor="signup-password" className="block text-sm font-medium text-slate-700">Password</label>
             <div className="relative mt-1">
               <input 
+                id="signup-password"
                 type={showPassword ? "text" : "password"}
                 {...register('password', { 
                   required: 'Password is required',
@@ -120,9 +123,10 @@ export const SignupPage = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700">Confirm Password</label>
+            <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-slate-700">Confirm Password</label>
             <div className="relative mt-1">
               <input 
+                id="signup-confirm-password"
                 type={showConfirmPassword ? "text" : "password"}
                 {...register('password_confirm', { 
                   required: 'Please confirm your password',

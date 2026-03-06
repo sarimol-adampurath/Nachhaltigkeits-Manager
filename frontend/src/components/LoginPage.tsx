@@ -58,17 +58,19 @@ export const LoginPage = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700">Username</label>
+            <label htmlFor="login-username" className="block text-sm font-medium text-slate-700">Username</label>
             <input 
+              id="login-username"
               {...register('username', { required: true })}
               className="mt-1 block w-full px-4 py-3 rounded-xl border-slate-200 focus:ring-emerald-500 focus:border-emerald-500 border"
               placeholder="Enter your username"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700">Password</label>
+            <label htmlFor="login-password" className="block text-sm font-medium text-slate-700">Password</label>
             <div className="relative mt-1">
               <input 
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 {...register('password', { required: true })}
                 className="block w-full px-4 py-3 pr-12 rounded-xl border border-slate-200 focus:ring-emerald-500 focus:border-emerald-500"

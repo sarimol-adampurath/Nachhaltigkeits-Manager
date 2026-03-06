@@ -5,6 +5,7 @@ import { DashboardStats } from "../components/DashboardStats";
 import { EmissionCharts } from "../components/EmissionCharts";
 import { EmissionForm } from "../components/EmissionForm";
 import { DeleteModal } from "../components/DeleteModal";
+import { ExportButton } from "../components/ExportButton";
 import { useState } from "react";
 import { SkeletonLoader } from "../components/Skeletons";
 import { ErrorState } from "../components/ErrorState";
@@ -90,6 +91,7 @@ export const Dashboard = () => {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <ExportButton startDate={startDate} endDate={endDate} />
           <button
             onClick={() => navigate('/profile')}
             className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-lg transition-all text-sm md:text-base border border-slate-200"

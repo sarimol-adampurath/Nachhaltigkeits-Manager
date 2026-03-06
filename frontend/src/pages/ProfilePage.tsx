@@ -181,8 +181,9 @@ export const ProfilePage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Last Name</label>
+                  <label htmlFor="profile-last-name" className="block text-sm font-medium text-slate-700">Last Name</label>
                   <input
+                    id="profile-last-name"
                     type="text"
                     name="last_name"
                     value={formData.last_name}
@@ -194,8 +195,9 @@ export const ProfilePage = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700">Email</label>
+                <label htmlFor="profile-email" className="block text-sm font-medium text-slate-700">Email</label>
                 <input
+                  id="profile-email"
                   type="email"
                   name="email"
                   value={formData.email}
@@ -258,8 +260,9 @@ export const ProfilePage = () => {
           >
             <form onSubmit={handlePasswordSave} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700">Current Password</label>
+                <label htmlFor="profile-current-password" className="block text-sm font-medium text-slate-700">Current Password</label>
                 <input
+                  id="profile-current-password"
                   type="password"
                   name="current_password"
                   value={passwordData.current_password}
@@ -272,8 +275,9 @@ export const ProfilePage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">New Password</label>
+                  <label htmlFor="profile-new-password" className="block text-sm font-medium text-slate-700">New Password</label>
                   <input
+                    id="profile-new-password"
                     type="password"
                     name="new_password"
                     value={passwordData.new_password}
@@ -284,8 +288,9 @@ export const ProfilePage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700">Confirm New Password</label>
+                  <label htmlFor="profile-confirm-new-password" className="block text-sm font-medium text-slate-700">Confirm New Password</label>
                   <input
+                    id="profile-confirm-new-password"
                     type="password"
                     name="new_password_confirm"
                     value={passwordData.new_password_confirm}
