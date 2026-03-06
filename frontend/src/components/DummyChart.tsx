@@ -32,7 +32,7 @@ export const DummyChart = () => {
             paddingAngle={3}
             dataKey="value"
           >
-            {chartData.map((entry: { name: string; value: number }, index: number) => (
+            {chartData.map((_entry: { name: string; value: number }, index: number) => (
               <Cell key={`cell-${index}`} fill="#d1d5db" />
             ))}
           </Pie>
