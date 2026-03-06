@@ -18,5 +18,5 @@ urlpatterns = [
 # Single-host deployment: route non-API paths to React app.
 if settings.FRONTEND_DIST_DIR.exists():
     urlpatterns += [
-        re_path(r'^(?!api/|admin/|static/).*$', TemplateView.as_view(template_name='index.html')),
+        re_path(r'^(?!api/|admin/|static/|assets/).*$', TemplateView.as_view(template_name='index.html')),
     ]
