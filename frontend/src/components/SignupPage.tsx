@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../api/client';
 
@@ -12,6 +12,16 @@ export const SignupPage = () => {
   const { register, handleSubmit, formState: { errors }, watch } = useForm();
   
   const password = watch('password');
+
+  // Auto-dismiss error after 5 seconds
+  useEffect(() => {
+    if (serverError) {
+      const timer = setTimeout(() => {
+        setServerError('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [serverError]);
 
   const onSubmit = async (data: any) => {
     try {

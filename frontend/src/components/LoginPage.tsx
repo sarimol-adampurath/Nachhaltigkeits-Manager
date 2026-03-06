@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import apiClient from '../api/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const LoginPage = () => {
   const { login } = useAuth();
@@ -12,6 +12,16 @@ export const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
   const successMessage = (location.state as { message?: string } | null)?.message;
+
+  // Auto-dismiss error after 5 seconds
+  useEffect(() => {
+    if (serverError) {
+      const timer = setTimeout(() => {
+        setServerError('');
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [serverError]);
 
   const onSubmit = async (data: any) => {
     try {
