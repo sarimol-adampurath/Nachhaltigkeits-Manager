@@ -24,10 +24,11 @@ export const useEmission = (startDate?: string, endDate?: string, page: number =
     retry: 2,
   });
 
-  const logs = data?.results || [];
-  const totalCount = data?.count || 0;
-  const hasNext = data?.next !== null;
-  const hasPrevious = data?.previous !== null;
+  // Safely extract data with defaults
+  const logs = (data && typeof data === 'object' && 'results' in data) ? data.results : [];
+  const totalCount = (data && typeof data === 'object' && 'count' in data) ? data.count : 0;
+  const hasNext = (data && typeof data === 'object' && 'next' in data) ? data.next !== null : false;
+  const hasPrevious = (data && typeof data === 'object' && 'previous' in data) ? data.previous !== null : false;
 
   // 2. Deleting Data (The "Delete" part of CRUD)
   const deleteMutation = useMutation({
