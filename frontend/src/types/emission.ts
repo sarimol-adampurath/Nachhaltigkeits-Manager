@@ -17,6 +17,13 @@ export interface ActivityLog {
   co2_total: number;
 }
 
+export interface PaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 export const EmissionSchema = z.object({
   date: z.string().min(1, "Date is required"),
   category: z.number().int().positive("Please select a valid category"),

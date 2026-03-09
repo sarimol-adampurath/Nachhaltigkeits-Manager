@@ -1,16 +1,33 @@
 import apiClient from "./client";
-import type {ActivityLog} from "../types/emission";  
+import type {ActivityLog, PaginatedResponse} from "../types/emission";  
 
 export const emissionService = {
-    // get all the logs from backend (optionally filtered by date range)
-  getLogs:async (startDate?: string, endDate?: string): Promise<ActivityLog[]> => {
+  // get paginated logs from backend (optionally filtered by date range)
+  getLogs: async (startDate?: string, endDate?: string, page?: number): Promise<PaginatedResponse<ActivityLog>> => {
     const params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
+    if (page) params.append('page', page.toString());
     
     const url = params.toString() ? `logs/?${params.toString()}` : 'logs/';
-    const response = await apiClient.get<ActivityLog[]>(url);
+    const response = await apiClient.get<PaginatedResponse<ActivityLog>>(url);
     return response.data;
+  },
+
+  // get all logs (fetch all pages) - for exports and charts
+  getAllLogs: async (startDate?: string, endDate?: string): Promise<ActivityLog[]> => {
+    let allLogs: ActivityLog[] = [];
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore) {
+      const response = await emissionService.getLogs(startDate, endDate, page);
+      allLogs = [...allLogs, ...response.results];
+      hasMore = response.next !== null;
+      page++;
+    }
+
+    return allLogs;
   },
 
   // delete a log by id

@@ -14,15 +14,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { emissionService } from '../api/emissionServices';
 
-export const useEmission = (startDate?: string, endDate?: string) => {
+export const useEmission = (startDate?: string, endDate?: string, page: number = 1) => {
   const queryClient = useQueryClient();
 
-  // 1. Fetching Data (The "Read" part of CRUD)
-  const { data: logs = [], isLoading, isError, refetch } = useQuery({
-    queryKey: ['emissions', startDate, endDate],
-    queryFn: () => emissionService.getLogs(startDate, endDate),
-    retry:2,
+  // 1. Fetching Data (The "Read" part of CRUD) - Now with pagination
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['emissions', startDate, endDate, page],
+    queryFn: () => emissionService.getLogs(startDate, endDate, page),
+    retry: 2,
   });
+
+  const logs = data?.results || [];
+  const totalCount = data?.count || 0;
+  const hasNext = data?.next !== null;
+  const hasPrevious = data?.previous !== null;
 
   // 2. Deleting Data (The "Delete" part of CRUD)
   const deleteMutation = useMutation({
@@ -32,6 +37,7 @@ export const useEmission = (startDate?: string, endDate?: string) => {
       queryClient.invalidateQueries({ queryKey: ['emissions'] });
     },
   });
+  
   // 3. Adding Data (The "Create" part of CRUD) - Optional, but shows how to extend
   const addMutation = useMutation({
     mutationFn: (newLog: { date: string; category: number; quantity: number; note?: string }) => 
@@ -44,6 +50,9 @@ export const useEmission = (startDate?: string, endDate?: string) => {
 
   return { 
     logs, 
+    totalCount,
+    hasNext,
+    hasPrevious,
     loading: isLoading, 
     error: isError ? "Failed to sync with server" : null,
     refetch,
