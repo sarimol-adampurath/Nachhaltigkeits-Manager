@@ -45,6 +45,15 @@ export const emissionService = {
   // get all emission factors
   getFactors: async () => {
     const response = await apiClient.get('factors/');
-    return response.data;
+    const payload = response.data;
+
+    // Backward/forward compatible: handle both plain arrays and paginated payloads.
+    if (Array.isArray(payload)) {
+      return payload;
+    }
+    if (payload && Array.isArray(payload.results)) {
+      return payload.results;
+    }
+    return [];
   },
 };

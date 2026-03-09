@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from .models import EmissionFactor, ActivityLog
 from .serializers import (
     EmissionFactorSerializer,
@@ -147,6 +148,10 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
     - end_date: filter logs up to this date (YYYY-MM-DD)
     """
     permission_classes = [permissions.IsAuthenticated]
+
+class ActivityLogPagination(PageNumberPagination):
+    page_size = 20
+
     serializer_class = ActivityLogSerializer
 
     def get_queryset(self):
@@ -156,6 +161,7 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
         # Get date range parameters from query string
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
+    pagination_class = ActivityLogPagination
         
         # Apply date filters if provided
         if start_date:
