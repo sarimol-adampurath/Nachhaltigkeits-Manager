@@ -19,3 +19,5 @@ services:
         sync: false
       - key: DJANGO_SECURE_SSL_REDIRECT
         value: "True"
+      - key: DATABASE_URL
+        sync: false
