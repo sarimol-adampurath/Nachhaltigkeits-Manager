@@ -140,6 +140,10 @@ class EmissionFactorViewSet(viewsets.ModelViewSet):
     serializer_class = EmissionFactorSerializer
 
 
+class ActivityLogPagination(PageNumberPagination):
+    page_size = 20
+
+
 class ActivityLogViewSet(viewsets.ModelViewSet):
     """
     Activity logs - each user only sees and edits their own logs.
@@ -148,27 +152,23 @@ class ActivityLogViewSet(viewsets.ModelViewSet):
     - end_date: filter logs up to this date (YYYY-MM-DD)
     """
     permission_classes = [permissions.IsAuthenticated]
-
-class ActivityLogPagination(PageNumberPagination):
-    page_size = 20
-
     serializer_class = ActivityLogSerializer
+    pagination_class = ActivityLogPagination
 
     def get_queryset(self):
         """Filter activity logs to only show the current user's logs, with optional date filtering"""
         queryset = ActivityLog.objects.filter(user=self.request.user).select_related('category')
-        
+
         # Get date range parameters from query string
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
-    pagination_class = ActivityLogPagination
-        
+
         # Apply date filters if provided
         if start_date:
             queryset = queryset.filter(date__gte=start_date)
         if end_date:
             queryset = queryset.filter(date__lte=end_date)
-        
+
         return queryset.order_by('-date')
 
     def perform_create(self, serializer):
