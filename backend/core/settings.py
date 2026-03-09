@@ -173,8 +173,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [
-    FRONTEND_DIST_DIR,  # Serve all files from dist/ (including favicon.svg)
-] if FRONTEND_DIST_DIR.exists() else []
+    FRONTEND_DIST_DIR / 'assets',
+] if (FRONTEND_DIST_DIR / 'assets').exists() else []
 
 CORS_ALLOWED_ORIGINS = get_env_list('CORS_ALLOWED_ORIGINS', [
     'http://localhost:5173',
